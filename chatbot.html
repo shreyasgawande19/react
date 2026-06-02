@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chatbot</title>
+</head>
+
+<body>
+    <div class="container"></div>
+    <script src="https://unpkg.com/supersimpledev@8.6.4/react.js"></script>
+    <script src="https://unpkg.com/supersimpledev@8.6.4/react-dom.js"></script>
+
+    <script src="https://unpkg.com/supersimpledev@8.6.4/babel.js"></script>
+    <script type="text/babel">
+        function ChatInput() {
+            return (
+                <>
+                    <input
+                        type="text" placeholder="Send a message to Chatbot"
+                        size="30"
+                    />
+                    <button>Send</button>
+                </>
+            )
+        }
+
+        function ChatMessage({ message, sender }) {
+            // const message = props.message;
+            // const sender = props.sender;
+            // const {message,sender}= props;
+            /*
+            if (sender === 'chatbot') {
+                return (
+                    <div>
+                        <img src="images/chatbotimg.png" alt="Chatbot Icon" width="50" height="50" />
+                        {message}
+                    </div>
+                );
+            }
+            */
+            return (
+                <div>
+                    {sender === 'chatbot' && (
+                        <img src="images/chatbotimg.png" alt="Chatbot Icon" width="50" height="50" />
+                    )}
+                    {message}
+                    {sender === 'user' && (
+                        <img src="images/userimg.png" alt="User Icon" width="50" height="50" />
+                    )}
+                </div>
+            );
+        }
+
+        function ChatMessages() {
+            const chatMessages = [{
+                message: "Hello, chatbot!",
+                sender: "user",
+                id: 1
+            }, {
+                message: "How can I help you today?",
+                sender: "chatbot",
+                id: 2
+            }, {
+                message: "Can you get me today's date?",
+                sender: "user",
+                id: 3
+            }, {
+                message: "Today is May 31",
+                sender: "chatbot",
+                id: 4
+            }];
+            function sendMessage() {
+                console.log("Send button clicked");
+            }
+            return (
+                <>
+                    <button onClick={sendMessage}>Send</button>
+                    {chatMessages.map((chatMessage) => {
+                        return (
+                            <ChatMessage
+                                message={chatMessage.message}
+                                sender={chatMessage.sender}
+                                key={chatMessage.id}
+                            />
+                        );
+                    })}
+                </>
+            );
+        }
+        function App() {
+
+            return (
+                <>
+                    <ChatInput />
+                    <ChatMessages />
+                </>
+            )
+        }
+
+        const root = document.querySelector(".container");
+        ReactDOM.createRoot(root).render(<App />);
+    </script>
+</body>
+
+</html>
