@@ -11,17 +11,51 @@
     <div class="container"></div>
     <script src="https://unpkg.com/supersimpledev@8.6.4/react.js"></script>
     <script src="https://unpkg.com/supersimpledev@8.6.4/react-dom.js"></script>
+    <script src="https://unpkg.com/supersimpledev@8.6.4/chatbot.js"></script>
 
     <script src="https://unpkg.com/supersimpledev@8.6.4/babel.js"></script>
     <script type="text/babel">
-        function ChatInput() {
+        function ChatInput({ chatMessages, setChatMessages }) {
+            const [inputText, setInputText] = React.useState("");
+
+            function saveInputText(event) {
+                setInputText(event.target.value);
+            }
+
+            function sendMessage() {
+                const newChatMessages = [
+                    ...chatMessages,
+                    {
+                        message: inputText,
+                        sender: "user",
+                        id: crypto.randomUUID()
+                    }
+                ];
+
+                setChatMessages(newChatMessages);
+
+                const response = chatbot.getResponse(inputText);
+                setChatMessages([
+                    ...newChatMessages,
+                    {
+                        message: response,
+                        sender: "chatbot",
+                        id: crypto.randomUUID()
+                    }
+                ]);
+
+                setInputText("");
+            }
             return (
+
                 <>
                     <input
                         type="text" placeholder="Send a message to Chatbot"
                         size="30"
+                        onChange={saveInputText}
+                        value={inputText}
                     />
-                    <button>Send</button>
+                    <button onClick={sendMessage}>Send</button>
                 </>
             )
         }
@@ -53,8 +87,27 @@
             );
         }
 
-        function ChatMessages() {
-            const chatMessages = [{
+
+        function ChatMessages({ chatMessages }) {
+
+
+            return (
+                <>
+                    {chatMessages.map((chatMessage) => {
+                        return (
+                            <ChatMessage
+                                message={chatMessage.message}
+                                sender={chatMessage.sender}
+                                key={chatMessage.id}
+                            />
+                        );
+                    })}
+                </>
+            );
+        }
+        function App() {
+
+            const [chatMessages, setChatMessages] = React.useState([{
                 message: "Hello, chatbot!",
                 sender: "user",
                 id: 1
@@ -70,31 +123,20 @@
                 message: "Today is May 31",
                 sender: "chatbot",
                 id: 4
-            }];
-            function sendMessage() {
-                console.log("Send button clicked");
-            }
-            return (
-                <>
-                    <button onClick={sendMessage}>Send</button>
-                    {chatMessages.map((chatMessage) => {
-                        return (
-                            <ChatMessage
-                                message={chatMessage.message}
-                                sender={chatMessage.sender}
-                                key={chatMessage.id}
-                            />
-                        );
-                    })}
-                </>
-            );
-        }
-        function App() {
+            }]);
 
+            // const [chatMessages, setChatMessages] = array;
+            // const chatMessages = array[0];
+            // const setChatMessages = array[1];
             return (
                 <>
-                    <ChatInput />
-                    <ChatMessages />
+                    <ChatInput
+                        chatMessages={chatMessages}
+                        setChatMessages={setChatMessages}
+                    />
+                    <ChatMessages
+                        chatMessages={chatMessages}
+                    />
                 </>
             )
         }
