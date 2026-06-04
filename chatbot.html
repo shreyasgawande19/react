@@ -84,6 +84,26 @@
             overflow-y: auto;
             scrollbar-width: thin;
         }
+
+        .loader {
+            width: 18px;
+            height: 18px;
+            border: 3px solid #ccc;
+            border-top: 3px solid #007bff;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+            margin: 10px;
+        }
+
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
+        }
     </style>
 </head>
 
@@ -96,6 +116,7 @@
     <script src="https://unpkg.com/supersimpledev@8.6.4/babel.js"></script>
     <script type="text/babel">
         function ChatInput({ chatMessages, setChatMessages }) {
+            const [isLoading, setIsLoading] = React.useState(false);
             const [inputText, setInputText] = React.useState("");
 
             function saveInputText(event) {
@@ -109,20 +130,35 @@
                         message: inputText,
                         sender: "user",
                         id: crypto.randomUUID()
+                    },
+                    {
+                        message: "Typing...",
+                        sender: "chatbot",
+                        id: crypto.randomUUID(),
+                        isLoading: true
                     }
                 ];
 
                 setChatMessages(newChatMessages);
+                setIsLoading(true);
 
                 const response = chatbot.getResponse(inputText);
-                setChatMessages([
-                    ...newChatMessages,
-                    {
-                        message: response,
-                        sender: "chatbot",
-                        id: crypto.randomUUID()
-                    }
-                ]);
+
+                setTimeout(() => {
+                    const updatedMessages = newChatMessages.map(msg => {
+                        if (msg.isLoading) {
+                            return {
+                                message: response,
+                                sender: "chatbot",
+                                id: crypto.randomUUID()
+                            };
+                        }
+                        return msg;
+                    });
+
+                    setChatMessages(updatedMessages);
+                    setIsLoading(false);
+                }, 800);
 
                 setInputText("");
             }
@@ -137,7 +173,9 @@
                         value={inputText}
                     />
                     <button onClick={sendMessage}
-                        class="btn-primary">Send</button>
+                        class="btn-primary">
+                        {isLoading ? "Sending..." : "Send"}
+                    </button>
                 </div>
             )
         }
@@ -165,7 +203,11 @@
                         <img src="images/chatbotimg.png" alt="Chatbot Icon" class="message-icon" />
                     )}
                     <div class="message-content">
-                        {message}
+                        {message === "Typing..." ? (
+                            <div class="loader"></div>
+                        ) : (
+                            message
+                        )}
                     </div>
                     {sender === 'user' && (
                         <img src="images/userimg.png" alt="User Icon" class="message-icon" />
