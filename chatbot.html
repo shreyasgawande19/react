@@ -5,6 +5,86 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Chatbot</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+        }
+
+        .btn-primary {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-left: 10px;
+            border: 1px solid #007bff;
+        }
+
+        .form-control {
+            padding: 10px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+            width: 300px;
+            border-width: 1px;
+            font-size: 16px;
+
+            flex-grow: 1;
+        }
+
+        .chat-input {
+            display: flex;
+            align-items: center;
+            margin-bottom: 60px;
+
+        }
+
+        .chat-container {
+            width: 600px;
+            margin: 0 auto;
+            border-radius: 5px;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .user-message {
+            justify-content: flex-end;
+            display: flex;
+            align-items: start;
+        }
+
+        .chatbot-message {
+            justify-content: flex-start;
+            display: flex;
+            align-items: start;
+        }
+
+        .message-content {
+            max-width: 70%;
+            padding: 10px;
+            border-radius: 5px;
+            background-color: #e0e0e0;
+            margin: 10px;
+            max-width: 300px;
+            font-family: Arial, sans-serif;
+        }
+
+        .message-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            margin: 10px;
+        }
+
+        .chat-messages {
+            flex-grow: 1;
+            margin-top: 20px;
+            overflow-y: auto;
+            scrollbar-width: thin;
+        }
+    </style>
 </head>
 
 <body>
@@ -48,15 +128,17 @@
             }
             return (
 
-                <>
+                <div class="chat-input">
                     <input
                         type="text" placeholder="Send a message to Chatbot"
                         size="30"
+                        class="form-control"
                         onChange={saveInputText}
                         value={inputText}
                     />
-                    <button onClick={sendMessage}>Send</button>
-                </>
+                    <button onClick={sendMessage}
+                        class="btn-primary">Send</button>
+                </div>
             )
         }
 
@@ -75,13 +157,18 @@
             }
             */
             return (
-                <div>
+                <div class=
+                    {sender === 'chatbot'
+                        ? 'chatbot-message' : 'user-message'
+                    }>
                     {sender === 'chatbot' && (
-                        <img src="images/chatbotimg.png" alt="Chatbot Icon" width="50" height="50" />
+                        <img src="images/chatbotimg.png" alt="Chatbot Icon" class="message-icon" />
                     )}
-                    {message}
+                    <div class="message-content">
+                        {message}
+                    </div>
                     {sender === 'user' && (
-                        <img src="images/userimg.png" alt="User Icon" width="50" height="50" />
+                        <img src="images/userimg.png" alt="User Icon" class="message-icon" />
                     )}
                 </div>
             );
@@ -89,10 +176,16 @@
 
 
         function ChatMessages({ chatMessages }) {
-
+            const chatMessagesEndRef = React.useRef(null);
+            React.useEffect(() => {
+                const container = chatMessagesEndRef.current;
+                if (container) {
+                    container.scrollTop = container.scrollHeight;
+                }
+            }, [chatMessages]);
 
             return (
-                <>
+                <div class="chat-messages" ref={chatMessagesEndRef}>
                     {chatMessages.map((chatMessage) => {
                         return (
                             <ChatMessage
@@ -102,42 +195,27 @@
                             />
                         );
                     })}
-                </>
+                </div>
             );
         }
         function App() {
 
-            const [chatMessages, setChatMessages] = React.useState([{
-                message: "Hello, chatbot!",
-                sender: "user",
-                id: 1
-            }, {
-                message: "How can I help you today?",
-                sender: "chatbot",
-                id: 2
-            }, {
-                message: "Can you get me today's date?",
-                sender: "user",
-                id: 3
-            }, {
-                message: "Today is May 31",
-                sender: "chatbot",
-                id: 4
-            }]);
+            const [chatMessages, setChatMessages] = React.useState([]);
 
             // const [chatMessages, setChatMessages] = array;
             // const chatMessages = array[0];
             // const setChatMessages = array[1];
             return (
-                <>
+                <div class="chat-container">
+
+                    <ChatMessages
+                        chatMessages={chatMessages}
+                    />
                     <ChatInput
                         chatMessages={chatMessages}
                         setChatMessages={setChatMessages}
                     />
-                    <ChatMessages
-                        chatMessages={chatMessages}
-                    />
-                </>
+                </div>
             )
         }
 
