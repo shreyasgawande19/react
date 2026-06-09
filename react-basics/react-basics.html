@@ -14,14 +14,40 @@
 
     <script src="https://unpkg.com/supersimpledev@8.6.4/babel.js"></script>
     <script type="text/babel">
-        const div = (
-            <div>
-                <h1>Hello, React!</h1>
-                <button>Click Me</button>
-            </div>
-        );
+        const { useState } = React;
+        function LoginForm() {
+            const [username, setusername] = useState('');
+            const [password, setpassword] = useState('');
+            const [isLogin, setIsLogin] = useState(false);
+
+            const handleLogin = () => {
+                if (username && password) {
+                    setIsLogin(true);
+                }
+            };
+            return (
+                <div>
+                    {isLogin ?
+                        (
+                            <p>Welcome here {username}! </p>
+                        ) :
+                        (
+                            <div>
+                                <input type="text" placeholder="Username" value={username} onChange={(e) => setusername(e.target.value)} />
+                                <input type="password" placeholder="Password" value={password} onChange={(e) => setpassword(e.target.value)} />
+                                <button onClick={handleLogin}>Login</button>
+                            </div>
+                        )}
+                </div>
+            );
+        };
+        function App() {
+            return (
+                <LoginForm />
+            );
+        };
         const root = document.querySelector(".container");
-        ReactDOM.createRoot(root).render(div);
+        ReactDOM.createRoot(root).render(<App />);
     </script>
 </body>
 
