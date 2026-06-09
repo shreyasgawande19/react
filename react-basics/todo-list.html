@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>React Basics</title>
+</head>
+
+<body>
+    <div class="container"></div>
+    <script src="https://unpkg.com/supersimpledev@8.6.4/react.js"></script>
+    <script src="https://unpkg.com/supersimpledev@8.6.4/react-dom.js"></script>
+
+    <script src="https://unpkg.com/supersimpledev@8.6.4/babel.js"></script>
+    <script type="text/babel">
+        const { useState } = React;
+
+        function todo() {
+            const [todo, settodo] = useState([{
+                id: 1,
+                text: 'Learn React'
+            },
+            {
+                id: 2,
+                text: 'Hello'
+            }
+            ]);
+
+            const [input, setInput] = useState('');
+
+            const addTodo = () => {
+                if (input.trim()) {
+                    const newTodo = {
+                        id: todos.length + 1,
+                        title: input
+                    };
+                }
+            }
+
+            return (
+                <div>
+                    <h1> My ToDo App</h1>
+                    <input
+                        type='text'
+                        placeholder='Todo tasks...'
+                        value={input}
+                        onChange={(e) => setInput(e.target.value)}
+                    />
+                    <button onClick={addTodo}>Add<button>
+                    </div>
+                        )
+        };
+                        function App() {
+            return (
+                        <LoginForm />
+                        );
+        };
+                        const root = document.querySelector(".container");
+                        ReactDOM.createRoot(root).render(<App />);
+    </script>
+</body>
+
+</html>
